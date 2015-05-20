@@ -17,7 +17,6 @@ Feature: mrspec
     """
     And the file "test/c_test.rb":
     """
-    require 'minitest'
     class CTest < Minitest::Test
       def test_passes
       end
@@ -25,7 +24,6 @@ Feature: mrspec
     """
     And the file "test/dir/d_test.rb":
     """
-    require 'minitest'
     class DTest < Minitest::Test
       def test_passes
       end
@@ -33,7 +31,6 @@ Feature: mrspec
     """
     And the file "test/dir/test_e.rb":
     """
-    require 'minitest'
     class ETest < Minitest::Test
       def test_passes
       end
@@ -56,7 +53,6 @@ Feature: mrspec
   Scenario: Registers minitest tests as RSpec tests, recording skips, passes, errors, failures
     Given the file "some_test.rb":
     """
-    require 'minitest'
     class LotaStuffsTest < Minitest::Test
       def test_passes
       end
@@ -95,7 +91,6 @@ Feature: mrspec
   Scenario: Works with Minitest::Test, choosing intelligent names
     Given the file "some_test.rb":
     """
-    require 'minitest'
     class MyClass1Test < Minitest::Test
       def test_it_does_stuff
       end
@@ -136,7 +131,6 @@ Feature: mrspec
   Scenario: Filters the runner and minitest code out of the backtrace do
     Given the file "some_test.rb":
     """
-    require 'minitest'
     class LotaStuffsTest < Minitest::Test
       def test_errors
         raise "zomg"
@@ -152,7 +146,6 @@ Feature: mrspec
   Scenario: --fail-fast flag
     Given the file "fails_fast_test.rb":
     """
-    require 'minitest'
     class TwoFailures < Minitest::Test
       i_suck_and_my_tests_are_order_dependent!
       def test_1
@@ -176,7 +169,6 @@ Feature: mrspec
     """
     Given the file "test/first_test.rb":
     """
-    require 'minitest'
     class FirstTest < Minitest::Test
       def test_1
       end
@@ -184,7 +176,6 @@ Feature: mrspec
     """
     And the file "test/second_test.rb":
     """
-    require 'minitest'
     class SecondTest < Minitest::Test
       def test_2
       end
@@ -204,7 +195,6 @@ Feature: mrspec
     """
     Given the file "test/first_test.rb":
     """
-    require 'minitest'
     class FirstTest < Minitest::Test
       def test_minitest_1
       end
@@ -212,7 +202,6 @@ Feature: mrspec
     """
     And the file "test/second_test.rb":
     """
-    require 'minitest'
     class SecondTest < Minitest::Test
       def test_minitest_2
       end
@@ -228,7 +217,6 @@ Feature: mrspec
   Scenario: Can add metadata to examples, ie run only tagged tests
     Given the file "test/tag_test.rb":
     """
-    require 'minitest'
     class TagTest < Minitest::Test
       meta first: true
       def test_1
@@ -287,8 +275,6 @@ Feature: mrspec
   Scenario: Can add metadata to groups
     Given the file "tag_groups.rb":
     """
-    require 'minitest'
-
     class Tag1Test < Minitest::Test
       classmeta tag1: true
 
@@ -359,7 +345,6 @@ Feature: mrspec
   Scenario: Respects Minitest's lifecycle hooks
     Given the file "test/lifecycle_test.rb":
     """
-    require 'minitest'
     class A < Minitest::Test
       %w(before_teardown teardown after_teardown before_setup setup after_setup).shuffle.each do |methodname|
         define_method methodname do
@@ -430,7 +415,7 @@ Feature: mrspec
     source 'https://rubygems.org'
     gem 'mrspec', path: "{{root_dir}}"
     """
-    When I run "BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle install"
+    When I run "env BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle install"
     Then the program ran successfully
 
     Given the file "no_dev_deps/print_results.rb":
@@ -464,7 +449,7 @@ Feature: mrspec
     end
     """
 
-    When I run "BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle exec mrspec no_dev_deps/test_with_failures.rb"
+    When I run "env BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle exec mrspec no_dev_deps/test_with_failures.rb"
     Then stderr is empty
     And  stdout includes "4 examples"
     And  stdout includes "2 failures"
@@ -479,7 +464,7 @@ Feature: mrspec
       def test_that_passes() assert true end
     end
     """
-    When I run "BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle exec mrspec -f p no_dev_deps/test_that_passes.rb"
+    When I run "env BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle exec mrspec -f p no_dev_deps/test_that_passes.rb"
     Then the program ran successfully
     And  stdout includes "NO ERROR"
     And  stdout includes "NO UNEXPECTED DEPS"
