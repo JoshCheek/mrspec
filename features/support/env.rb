@@ -3,7 +3,7 @@ require 'tmpdir'
 require 'fileutils'
 
 proving_grounds_dir = Dir.mktmpdir
-at_exit { FileUtils.remove_entry proving_grounds_dir }
+After { FileUtils.remove_entry proving_grounds_dir }
 
 Haiti.configure do |config|
   config.proving_grounds_dir = proving_grounds_dir
