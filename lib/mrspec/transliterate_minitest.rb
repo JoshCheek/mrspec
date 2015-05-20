@@ -2,11 +2,15 @@
 module MRspec
   module TransliterateMinitest
     def self.group_name(klass)
-      klass.inspect.sub /Test$/, ''
+      klass.name.sub /Test$/, ''
     end
 
     def self.example_name(method_name)
-      method_name.to_s.sub(/^test_/, '').tr('_', ' ')
+      # remove test_, and turn underscores into spaces
+      #   https://github.com/seattlerb/minitest/blob/f1081566ec6e9e391628bde3a26fb057ad2576a8/lib/minitest/test.rb#L62
+      # remove test_0001_, where the number increments
+      #   https://github.com/seattlerb/minitest/blob/f1081566ec6e9e391628bde3a26fb057ad2576a8/lib/minitest/spec.rb#L218-222
+      method_name.sub(/^test_(?:\d{4}_)?/, '').tr('_', ' ')
     end
 
     def self.import_minitest

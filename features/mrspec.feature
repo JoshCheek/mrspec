@@ -101,8 +101,8 @@ Feature: mrspec
     Given the file "some_spec.rb":
     """
     require 'minitest/spec'
-    describe 'mt' do
-      it 'passes' do
+    describe 'the description' do
+      it 'the example' do
         assert true
         if kind_of? Minitest::Spec
           puts "I am defined by Minitest::Spec"
@@ -114,6 +114,8 @@ Feature: mrspec
     Then stdout includes "1 example"
     And stdout includes "0 failures"
     And stdout includes "I am defined by Minitest::Spec"
+    And stdout includes '"description":"the example"'
+    And stdout includes '"full_description":"the description the example"'
 
 
   Scenario: Filters the runner and minitest code out of the backtrace do
