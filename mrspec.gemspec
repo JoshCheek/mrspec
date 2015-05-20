@@ -16,8 +16,8 @@ Gem::Specification.new do |s|
   s.executables   = ['mrspec']
   s.require_paths = ['lib']
 
-  s.add_dependency "rspec",    "~> 3.0"
-  s.add_dependency "minitest", "~> 5.0"
+  s.add_dependency "rspec-core", "~> 3.0"
+  s.add_dependency "minitest",   "~> 5.0"
 
   s.add_development_dependency "haiti",    ">= 0.2.2", "< 0.3"
   s.add_development_dependency "cucumber", "~> 2.0"
