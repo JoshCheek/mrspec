@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+require 'mrspec'
+
+RSpec.configuration = MRspec::Configuration.new
+
+RSpec.configure do |config|
+  config.disable_monkey_patching!
+  config.filter_gems_from_backtrace 'minitest'
+  config.backtrace_exclusion_patterns << /mrspec\.rb$/
+  config.pattern = config.pattern.sub('_spec.rb', '_{spec,test}.rb') # look for files suffixed with both _spec and _test
+end
+
+MRspec::Runner.autorun
