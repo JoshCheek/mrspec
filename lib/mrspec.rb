@@ -100,19 +100,18 @@ end
 
 # Custom configuration to gain access to configuration at the correct point in the lifecycle
 class MRspec::Configuration < RSpec::Core::Configuration
+  def initialize(*)
+    super
+    disable_monkey_patching!
+    filter_gems_from_backtrace 'minitest'
+    backtrace_exclusion_patterns << /mrspec\.rb$/
+    self.pattern = pattern.sub '_spec.rb', '_{spec,test}.rb' # look for files suffixed with both _spec and _test
+  end
+
   def load_spec_files(*)
     super                  # will load the files
     MRspec.import_minitest # declare them to RSpec
   end
 end
 
-
 RSpec.configuration = MRspec::Configuration.new
-
-# Could maybe place this in MRspec::Configuration#initialize
-RSpec.configure do |config|
-  config.disable_monkey_patching!
-  config.filter_gems_from_backtrace 'minitest'
-  config.backtrace_exclusion_patterns << /mrspec\.rb$/
-  config.pattern = config.pattern.sub('_spec.rb', '_{spec,test}.rb') # look for files suffixed with both _spec and _test
-end
