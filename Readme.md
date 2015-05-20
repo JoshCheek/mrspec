@@ -142,12 +142,47 @@ end
 Why?
 ----
 
-That rakefile thing is bullshit.
-(find that rant I wrote)
-(both the RSpec one, and the Minitest one just shell out anyway)
-(I shouldn't need to add a dep on Rake just to have it call a method)
-(difficulty getting minitest to run just the ones I want)
+The default way to run minitest tests is with Rake.
+And if you have multiple suites, that can be nice,
+or if you already use Rake, then it's not adding a new dependency.
+But here are some frustrations I have with it as a test runner:
 
+1. It's not a test runner, it's a build tool. As such, it's not well suited to this task.
+1. I shouldn't have to add a dependency on Rake just to run my tests.
+1. The `Rake::TestTask` is confoundingly opaque (I rant about it [here](https://github.com/stripe/stripe-ruby/pull/144#issuecomment-48810307))
+1. It ultimately just [shells out](https://github.com/rspec/rspec-core/blob/3145e2544e1825bc754d0986e893664afe19abf5/lib/rspec/core/rake_task.rb#L70)
+   (as does the [RSpec one](https://github.com/ruby/rake/blob/e644af3a09659c7e04245186607091324d8816e9/lib/rake/testtask.rb#L104),
+   so why do I need layers of translation and abstraction between me and a command-line invocation?
+   And what's the value of adding an entire process between me and my tests?
+   Think how long Rails takes to start up, now imagine paying that twice every time you want to run your tests!
+1. It makes it incredibly difficult to dynamically alter my test invoation.
+   With Minitest, you can pass `-n test_something` and it will only run the test named `test_something`,
+   but now I have to edit code tomake that happen (or write code to uese
+   environment variables, which is better, but still cumbersome,
+   and doesn't fail noisily if I mistype it)
+
+Furthermore, if someone doesn't know about the test task, or it seems formidable, as it often does to new students
+(I'm a [teacher](http://turing.io/team)), then they won't use it. They instead run files one at a time.
+When I go to run the tests, there's just no way built in to run them all. I wind up having to craft clever command-line invocations
+using custom tools ([1](https://github.com/JoshCheek/dotfiles/blob/master/bin/ff),
+[2](https://github.com/JoshCheek/dotfiles/blob/master/bin/prepend)).
+
+```sh
+$ ff test '\.rb' | prepend -r | xargs ruby -e ''
+```
+
+Oftentimes, this is the first time they've all been run together, and we find out they haven't run a test in a long time,
+because it's too cumbersome for them (they're not good with their tools yet), it's failing or worse, syntactically invalid.
+Maybe they even know it, but they run them one at a time, so it hasn't been a problem for them yet.
+
+Anyway, all of this is to say that Minitest needs a runner.
+I hear Rails is working on one, but I don't know when that'll be available,
+and who knows if they'll write it well enough to be used outside of Rails.
+
+But the RSpec runner is very nice, it has a lot of features that I use frequently.
+Someone suggested running Minitest with the RSpec runner (see attribution section),
+and I thought that was an interesting idea that could have value if it worked.
+...so, here we are.
 
 Nuances
 -------
