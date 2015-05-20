@@ -1,3 +1,5 @@
+require 'minitest'
+
 # Allow Minitest to support RSpec's metadata (eg tagging)
 # Thus you can tag a test or a class, and then pass `-t mytag` to mrspec,
 # and it will only run the tagged code.

@@ -1,4 +1,5 @@
-# Gives access to configuration at the correct points in the lifecycle
+require 'rspec/core/runner'
+
 module MRspec
   class Runner < RSpec::Core::Runner
     def initialize(*)

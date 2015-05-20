@@ -1,6 +1,6 @@
 require 'mrspec/transcribe_minitest'
+require 'rspec/core' # apparenlty you can't require just configuration alone
 
-# Gives access to configuration at the correct points in the lifecycle
 module MRspec
   class Configuration < RSpec::Core::Configuration
     def initialize(*)
@@ -11,8 +11,8 @@ module MRspec
     end
 
     def load_spec_files(*)
-      super                                      # will load the files
-      MRspec::TranscribeMinitest.import_minitest # declare them to RSpec
+      super                           # will load the files
+      MRspec::TranscribeMinitest.call # declare them to RSpec
     end
   end
 end
