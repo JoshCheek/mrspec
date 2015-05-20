@@ -1,15 +1,3 @@
-# Runs minitest tests using RSpec's test runner
-#
-# Examples:
-#   Autoloads specs and tests:  https://github.com/JoshCheek/dotfiles/blob/7495046fbe4a927394558e7da43b07219b02594f/test/mrspec.feature#L9
-#   fail fast:                  https://github.com/JoshCheek/dotfiles/blob/7495046fbe4a927394558e7da43b07219b02594f/test/mrspec.feature#L109
-#   tagging tests:              https://github.com/JoshCheek/dotfiles/blob/7495046fbe4a927394558e7da43b07219b02594f/test/mrspec.feature#L181
-#   tagging classes:            https://github.com/JoshCheek/dotfiles/blob/4c5bf2948a5f1d850e9d33311d1bea139e80c7ba/test/mrspec.feature#L240
-#
-# Inspired by
-#   https://github.com/rspec/rspec-core/issues/1786
-#   https://gist.github.com/e2/bcd2be81b4ac28c85ea0
-
 # presumably this is loose enough to not whine all the time, but tight enough to not break
 gem 'rspec',    '~> 3.0'
 gem 'minitest', '~> 5.0'
