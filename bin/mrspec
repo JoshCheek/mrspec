@@ -6,6 +6,9 @@ require 'mrspec'
 # All your config are belong to us
 RSpec.configuration = MRspec::Configuration.new
 
+# Use our option parser instead of RSpec's
+RSpec::Core::Parser.parser_method = RSpec::Core::Parser.instance_method :mrspec_parser
+
 # Run tests with our runner at program exit
 MRspec::Runner.autorun
 
