@@ -1,3 +1,5 @@
+require 'mrspec/transcribe_minitest'
+
 # Gives access to configuration at the correct points in the lifecycle
 module MRspec
   class Configuration < RSpec::Core::Configuration
@@ -9,8 +11,8 @@ module MRspec
     end
 
     def load_spec_files(*)
-      super                                         # will load the files
-      MRspec::TransliterateMinitest.import_minitest # declare them to RSpec
+      super                                      # will load the files
+      MRspec::TranscribeMinitest.import_minitest # declare them to RSpec
     end
   end
 end

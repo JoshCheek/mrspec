@@ -1,6 +1,5 @@
 require 'rspec/core'
 require 'minitest'
 require 'mrspec/minitest_metadata'
-require 'mrspec/transliterate_minitest'
 require 'mrspec/runner'
 require 'mrspec/configuration'

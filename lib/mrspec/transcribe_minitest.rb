@@ -1,7 +1,7 @@
 require 'mrspec/minitest_assertion_for_rspec'
 
 module MRspec
-  module TransliterateMinitest
+  module TranscribeMinitest
     def self.group_name(klass)
       klass.name.sub(/^Test/, '').sub(/Test$/, '')
     end
@@ -35,15 +35,11 @@ module MRspec
         instance = Minitest.run_one_method klass, mname
         next              if instance.passed?
         pending 'skipped' if instance.skipped?
-        raise TransliterateMinitest.wrap_error instance.failure.error
+        error = instance.failure.error
+        raise error unless error.kind_of? Minitest::Assertion
+        raise MinitestAssertionForRSpec.new error
       end
-
       fix_metadata example.metadata, klass.instance_method(mname)
-    end
-
-    def self.wrap_error(error)
-      return error unless error.kind_of? Minitest::Assertion
-      MinitestAssertionForRSpec.new error
     end
 
     def self.fix_metadata(metadata, method)
