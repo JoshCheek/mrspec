@@ -150,26 +150,23 @@ But here are some frustrations I have with it as a test runner:
 1. It's not a test runner, it's a build tool. As such, it's not well suited to this task.
 1. I shouldn't have to add a dependency on Rake just to run my tests.
 1. The `Rake::TestTask` is confoundingly opaque (I rant about it [here](https://github.com/stripe/stripe-ruby/pull/144#issuecomment-48810307))
-1. It ultimately just [shells out](https://github.com/rspec/rspec-core/blob/3145e2544e1825bc754d0986e893664afe19abf5/lib/rspec/core/rake_task.rb#L70)
-   (as does the [RSpec one](https://github.com/ruby/rake/blob/e644af3a09659c7e04245186607091324d8816e9/lib/rake/testtask.rb#L104),
-   so why do I need layers of translation and abstraction between me and a command-line invocation?
-   And what's the value of adding an entire process between me and my tests?
-   Think how long Rails takes to start up, now imagine paying that twice every time you want to run your tests!
-1. It makes it incredibly difficult to dynamically alter my test invoation.
+1. These ultimately just shell out ([RSpec's](https://github.com/rspec/rspec-core/blob/3145e2544e1825bc754d0986e893664afe19abf5/lib/rspec/core/rake_task.rb#L70),
+   [Minitest's](https://github.com/ruby/rake/blob/e644af3a09659c7e04245186607091324d8816e9/lib/rake/testtask.rb#L104)).
+   So I don't see what they offer over invoking the program directly (usually I know what I want to pass the program,
+   and I am trying to figure out how to configure the test task to do that).
+   The overhead of running additional processes can also be high:
+   think how long Rails takes to start up, now imagine paying that twice every time you want to run your tests!
+1. It makes it difficult to dynamically alter my test invoation.
    With Minitest, you can pass `-n test_something` and it will only run the test named `test_something`,
-   but now I have to edit code tomake that happen (or write code to uese
-   environment variables, which is better, but still cumbersome,
-   and doesn't fail noisily if I mistype it)
+   but now I have to edit code tomake that happen.
 
 Furthermore, if someone doesn't know about the test task, or it seems formidable, as it often does to new students
 (I'm a [teacher](http://turing.io/team)), then they won't use it. They instead run files one at a time.
-When I go to run the tests, there's just no way built in to run them all. I wind up having to craft clever command-line invocations
+When I go to run the tests, they don't have a way to run all of them.
+I wind up having to craft clever command-line invocations
 using custom tools ([1](https://github.com/JoshCheek/dotfiles/blob/master/bin/ff),
-[2](https://github.com/JoshCheek/dotfiles/blob/master/bin/prepend)).
-
-```sh
-$ ff test '\.rb' | prepend -r | xargs ruby -e ''
-```
+[2](https://github.com/JoshCheek/dotfiles/blob/master/bin/prepend)), like
+`ff test '\.rb' | prepend -r | xargs ruby -e ''`
 
 Oftentimes, this is the first time they've all been run together, and we find out they haven't run a test in a long time,
 because it's too cumbersome for them (they're not good with their tools yet), it's failing or worse, syntactically invalid.
