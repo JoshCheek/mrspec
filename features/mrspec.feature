@@ -427,3 +427,64 @@ Feature: mrspec
     And  stdout includes "run count:  1"
     And  stdout does not include "load count: 2"
     And  stdout does not include "run count:  2"
+
+
+  Scenario: Doesn't depend on RSpec::Mocks or RSpec::Expectations
+    Given the file "no_dev_deps/Gemfile":
+    """
+    source 'https://rubygems.org'
+    gem 'mrspec', path: "{{root_dir}}"
+    """
+    When I run "BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle install"
+    Then the program ran successfully
+
+    Given the file "no_dev_deps/print_results.rb":
+    """
+    at_exit do
+      exception = $!
+      if exception.kind_of? SystemExit
+        puts "ERROR: SYSTEM EXIT (RSpec raises this if there's a failure)"
+      elsif exception
+        puts "AN ERROR: #{$!.inspect}"
+      else
+        puts "NO ERROR"
+      end
+
+      unexpected_deps = $LOADED_FEATURES.grep(/rspec/).grep(/mocks|expectations/)
+      if unexpected_deps.any?
+        puts "UNEXPECTED DEPS: #{unexpected_deps}"
+      else
+        puts "NO UNEXPECTED DEPS"
+      end
+    end
+    """
+    And the file "no_dev_deps/test_with_failures.rb":
+    """
+    require_relative 'print_results'
+    class A < Minitest::Test
+      def test_that_passes() assert_equal 1, 1 end
+      def test_that_fails()  assert_equal 1, 2 end
+      def test_that_errors() raise "wat"       end
+      def test_that_skips()  skip              end
+    end
+    """
+
+    When I run "BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle exec mrspec no_dev_deps/test_with_failures.rb"
+    Then stderr is empty
+    And  stdout includes "4 examples"
+    And  stdout includes "2 failures"
+    And  stdout includes "1 pending"
+    And  stdout includes "ERROR: SYSTEM EXIT"
+    And  stdout includes "NO UNEXPECTED DEPS"
+
+    Given the file "no_dev_deps/test_that_passes.rb":
+    """
+    require_relative 'print_results'
+    class A < Minitest::Test
+      def test_that_passes() assert true end
+    end
+    """
+    When I run "BUNDLE_GEMFILE=no_dev_deps/Gemfile bundle exec mrspec -f p no_dev_deps/test_that_passes.rb"
+    Then the program ran successfully
+    And  stdout includes "NO ERROR"
+    And  stdout includes "NO UNEXPECTED DEPS"

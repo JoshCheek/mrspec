@@ -14,6 +14,10 @@ module GeneralHelpers
   def pwd
     Haiti.config.proving_grounds_dir
   end
+
+  def root_dir
+    @root_dir ||= File.expand_path '../../..', __FILE__
+  end
 end
 
 When 'I pry' do
