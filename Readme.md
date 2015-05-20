@@ -16,11 +16,11 @@ Examples
 
 ### Run specs and tests in tandem
 
-Here, we see that it matches `test/*_test.rb`, `test/test_*.rb`, `spec/*_spec.rb`.
-It picks the RSpec group name by removing leading and trailing `Test` from the class name,
-it picks the example name by removing leading `test_` from the method, and switching underscores with spaces.
-It finds test classes and test methods by asking Minitest (which tracks subclasses of `Minitest::Runnable`,
-and asks each runnable class for its runnable methods).
+It matches `test/*_test.rb`, `test/test_*.rb`, `spec/*_spec.rb`.
+The RSpec group description is the class name without `Test` prefix/suffix.
+The example name is the method name without the `test_` prefix,
+and with underscores switched to spaces.
+It finds test classes and test methods by asking Minitest what it is tracking.
 
 ```ruby
 # file: spec/a_spec.rb
@@ -45,8 +45,7 @@ and asks each runnable class for its runnable methods).
 
   # Added because Minitest::Runnable knows about it
   class AnotherTestWithNeitherThePrefixNorTheSuffix < Minitest::Test
-    # This class says is_this_a_test_yes_it_is is a test, so we consider it to be one,
-    # despite its deviation from the traditional naming pattern
+    # This causes Minitest to consider it a test, so we consider it one
     def self.runnables
       ['is_this_a_test_yes_it_is']
     end
@@ -73,11 +72,39 @@ and asks each runnable class for its runnable methods).
 ![file patterns](https://s3.amazonaws.com/josh.cheek/mrspec/file-patterns.png)
 
 
-### Fail Fast and Tagging
+### Failures, Errors, Skips
 
-Here, we see that we have the ability to run all the tests until one fails (the `--fail-fast` flag).
-We can also add metadata to classes using `classmeta`, and individual tests using `meta`.
-This allows us to do things like easily switch which tests are targeted from the command-line.
+It understands Minitest skips and errors/failures.
+
+```ruby
+# file: various_errors.rb
+class VariousErrors < Minitest::Test
+  def test_this_passes()              assert true                    end
+  def test_they_arent_equal()         assert_equal 1, 2              end
+  def test_is_not_included()          assert_includes %w[a b c], 'd' end
+  def test_skipped_because…_reasons() skip                           end
+end
+```
+
+I used `--format progress` here, because there's enough errors that my default documentation
+formatter makes it spammy >.<
+
+![various errors](https://s3.amazonaws.com/josh.cheek/mrspec/various-errors2.png)
+
+
+### Fail Fast and filtering
+
+The `--fail-fast` flag is a favourite of mine. It continues running tests until it sees a failure, then it stops.
+
+We can also use tags to filter which tests to run.
+Mrspec adds RSpec metadata to Minitest classes and tests,
+the metadata behaves as a tag.
+
+The best thing about tags is they're easy to add,
+and they continue to apply to the same test, when it moves around
+(line numbers change), They stay correct even if I rename it!
+I won't have to tweak my command-line invocation until I've got the test passing!
+
 
 ```ruby
 # file: test.rb
@@ -95,8 +122,7 @@ class TwoFailures < Minitest::Test
   classmeta them_failing_tests: true
 
   # I like short tagnames, b/c usually my use is transient.
-  # So I can come mark the ones I want to run, and keep running them until they're fixed.
-  # The tags are correct, even if I change a test name or its position moves!
+  # I just keep them around until they're fixed.
   meta f1: true
   def test_3
     raise 'first failure'
@@ -110,29 +136,6 @@ end
 ```
 
 ![Examples of Tagging](https://s3.amazonaws.com/josh.cheek/mrspec/tagging.png)
-
-
-### Failures, Errors, Skips
-
-Here, we see that it understands Minitest skips and errors/failures.
-It uses the minitest messages, because they're pretty legit, no need to translate them.
-
-```ruby
-# file: various_errors.rb
-class VariousErrors < Minitest::Test
-  def test_this_passes()                          assert true                    end
-  def test_they_arent_equal()                     assert_equal 1, 2              end
-  def test_is_not_included()                      assert_includes %w[a b c], 'd' end
-  def test_raises_an_error()                      raise "Blowin up ovah here!"   end
-  def test_skipped_for_no_reason_in_particular()  skip                           end
-  def test_skipped_because…_reasons()             skip 'and a hop'               end
-end
-```
-
-I used `--format progress` here, because there's enough errors that my default documentation
-formatter makes it spammy >.<
-
-![various errors](https://s3.amazonaws.com/josh.cheek/mrspec/various-errors.png)
 
 
 
