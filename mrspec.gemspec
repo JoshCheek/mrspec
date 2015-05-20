@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Josh Cheek"]
   s.email       = ["josh.cheek@gmail.com"]
   s.homepage    = "https://github.com/JoshCheek/mrspec"
-  s.summary     = %q{Minitest tests, run with RSpec's runner}
+  s.summary     = %q{Minitest tests + RSpec's test runner}
   s.description = %q{Allows you to run Minitest tests and specs with RSpec's runner, thus you can write both Minitest and RSpec, side-by-side, and take advantage of the many incredibly helpful features it supports (primarily: better formatters, --colour, --fail-fast, and tagging).}
   s.license     = "MIT"
 
