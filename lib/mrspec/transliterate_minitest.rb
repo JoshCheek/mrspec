@@ -2,7 +2,7 @@
 module MRspec
   module TransliterateMinitest
     def self.group_name(klass)
-      klass.name.sub /Test$/, ''
+      klass.name.sub(/^Test/, '').sub(/Test$/, '')
     end
 
     def self.example_name(method_name)

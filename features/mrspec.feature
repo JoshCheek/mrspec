@@ -97,7 +97,27 @@ Feature: mrspec
     And stdout does not include "Minitest.run_one_method"
 
 
-  Scenario: Works with Minitest::Spec
+  Scenario: Works with Minitest::Test, choosing intelligent names
+    Given the file "some_test.rb":
+    """
+    require 'minitest'
+    class MyClass1Test < Minitest::Test
+      def test_it_does_stuff
+      end
+    end
+
+    class TestMyClass2 < Minitest::Test
+      def test_it_does_stuff
+      end
+    end
+    """
+    When I run "mrspec some_test.rb -f json"
+    Then the program ran successfully
+    And stdout includes '"full_description":"MyClass1 it does stuff"'
+    And stdout includes '"full_description":"MyClass2 it does stuff"'
+
+
+  Scenario: Works with Minitest::Spec, choosing intelligent names
     Given the file "some_spec.rb":
     """
     require 'minitest/spec'
