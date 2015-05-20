@@ -104,7 +104,7 @@ class MRspec::Configuration < RSpec::Core::Configuration
     super
     disable_monkey_patching!
     filter_gems_from_backtrace 'minitest'
-    backtrace_exclusion_patterns << /mrspec\.rb$/
+    backtrace_exclusion_patterns << /mrspec\.rb:/
     self.pattern = pattern.sub '_spec.rb', '_{spec,test}.rb' # look for files suffixed with both _spec and _test
   end
 

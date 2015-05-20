@@ -100,7 +100,6 @@ Feature: mrspec
     And stdout includes "I am defined by Minitest::Spec"
 
 
-    @wip
   Scenario: Filters the runner and minitest code out of the backtrace do
     Given the file "some_test.rb":
     """
