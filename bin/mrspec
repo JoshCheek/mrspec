@@ -2,5 +2,10 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require 'mrspec'
 
+# Use our config and install our runner at program exit
 RSpec.configuration = MRspec::Configuration.new
 MRspec::Runner.autorun
+
+# Disable RSpec and Minitest's autorun methods so that loading tests doesn't lead to multiple runners
+RSpec::Core::Runner.define_singleton_method(:autorun) { }
+Minitest.define_singleton_method(:autorun) { }

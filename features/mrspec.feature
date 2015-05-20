@@ -331,3 +331,72 @@ Feature: mrspec
     And  stdout includes "tagged with 1 and 2"
     And  stdout includes "tagged with 1 only"
     And  stdout includes "untagged"
+
+  Scenario: Intelligently formats RSpec's assertions
+
+  Scenario: Respects Minitest's lifecycle hooks
+    Given the file "test/lifecycle_test.rb":
+    """
+    require 'minitest'
+    class A < Minitest::Test
+      %w(before_teardown teardown after_teardown before_setup setup after_setup).shuffle.each do |methodname|
+        define_method methodname do
+          @order ||= []
+          @order << methodname
+        end
+      end
+
+      def test_1
+        @order << :test_1
+        at_exit { puts "[#{@order.join " "}]" }
+      end
+
+      def test_2
+        @order << :test_2
+        at_exit { puts "[#{@order.join " "}]" }
+      end
+    end
+    """
+    When I run "mrspec test/lifecycle_test.rb"
+    Then the program ran successfully
+    And  stdout includes "[before_setup setup after_setup test_1 before_teardown teardown after_teardown]"
+    And  stdout includes "[before_setup setup after_setup test_2 before_teardown teardown after_teardown]"
+
+
+  Scenario: Doesn't get fucked up by Minitest autorunning
+    Given the file "requires_minitest_autorun.rb":
+    """
+    require 'minitest/autorun'
+    class A < Minitest::Test
+      def test_a
+        p caller.last # will tell us which lib is running this test
+      end
+    end
+    """
+    When I run "mrspec requires_minitest_autorun.rb"
+    Then stdout includes "rspec/core/runner.rb"
+    And  stdout does not include "lib/minitest.rb"
+
+
+  Scenario: Doesn't get fucked up by RSpec autorunning
+    Given the file "requires_rspec_autorun.rb":
+    """
+    require 'rspec/autorun'
+
+    $load_count ||= 0
+    $load_count += 1
+
+    RSpec.describe 'something' do
+      it 'does whatever' do
+        $run_count ||= 0
+        $run_count += 1
+        puts "load count: #{$load_count}"
+        puts "run count:  #{$run_count}"
+      end
+    end
+    """
+    When I run "mrspec requires_rspec_autorun.rb"
+    Then stdout includes "load count: 1"
+    And  stdout includes "run count:  1"
+    And  stdout does not include "load count: 2"
+    And  stdout does not include "run count:  2"
