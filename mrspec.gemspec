@@ -1,4 +1,5 @@
-require_relative "lib/mrspec/version"
+$:.push File.expand_path("../lib", __FILE__)
+require "mrspec/version"
 
 Gem::Specification.new do |s|
   s.name        = "mrspec"
