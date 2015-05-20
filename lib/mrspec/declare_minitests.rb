@@ -2,7 +2,7 @@ require 'minitest'
 require 'mrspec/minitest_assertion_for_rspec'
 
 module MRspec
-  module TranscribeMinitest
+  module DeclareMinitests
     extend self
 
     def self.call

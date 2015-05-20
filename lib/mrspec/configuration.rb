@@ -1,5 +1,5 @@
-require 'mrspec/transcribe_minitest'
-require 'rspec/core' # apparenlty you can't require just configuration alone
+require 'mrspec/declare_minitests'
+require 'rspec/core'
 
 module MRspec
   class Configuration < RSpec::Core::Configuration
@@ -11,8 +11,8 @@ module MRspec
     end
 
     def load_spec_files(*)
-      super                           # will load the files
-      MRspec::TranscribeMinitest.call # declare them to RSpec
+      super
+      MRspec::DeclareMinitests.call
     end
   end
 end
