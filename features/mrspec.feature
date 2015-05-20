@@ -468,3 +468,8 @@ Feature: mrspec
     Then the program ran successfully
     And  stdout includes "NO ERROR"
     And  stdout includes "NO UNEXPECTED DEPS"
+
+  Scenario: The help screen is custom to mrspec
+    When I run "mrspec -h"
+    Then stdout includes "Usage: mrspec"
+    # Probably add more later
