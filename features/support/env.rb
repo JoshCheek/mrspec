@@ -1,8 +1,13 @@
 require 'haiti'
+require 'tmpdir'
+require 'fileutils'
+
+proving_grounds_dir = Dir.mktmpdir
+at_exit { FileUtils.remove_entry proving_grounds_dir }
 
 Haiti.configure do |config|
-  config.proving_grounds_dir = File.expand_path '../../../proving_grounds', __FILE__
-  config.bin_dir             = File.expand_path '../../../bin',             __FILE__
+  config.proving_grounds_dir = proving_grounds_dir
+  config.bin_dir             = File.expand_path('../../../bin', __FILE__)
 end
 
 module GeneralHelpers
