@@ -13,44 +13,6 @@ this will do it.
 Examples
 --------
 
-### Fail Fast and Tagging
-
-Here, we see that we have the ability to run all the tests until one fails (the `--fail-fast` flag).
-We can also add metadata to classes using `classmeta`, and individual tests using `meta`.
-This allows us to do things like easily switch which tests are targeted from the command-line.
-
-```ruby
-# file: test.rb
-
-# Here, we tag the `NoFailures` class with `them_passing_tests`
-# And the `TwoFailures` class with `them_failing_tests`
-class NoFailures < Minitest::Test
-  classmeta them_passing_tests: true
-
-  def test_1() end
-  def test_2() end
-end
-
-class TwoFailures < Minitest::Test
-  classmeta them_failing_tests: true
-
-  # I like short tagnames, b/c usually my use is transient.
-  # So I can come mark the ones I want to run, and keep running them until they're fixed.
-  # The tags are correct, even if I change a test name or its position moves!
-  meta f1: true
-  def test_3
-    raise 'first failure'
-  end
-
-  meta f2: true
-  def test_4
-    raise 'second failure'
-  end
-end
-```
-
-![Examples of Tagging](https://s3.amazonaws.com/josh.cheek/mrspec/tagging.png)
-
 
 ### Run specs and tests in tandem
 
@@ -109,6 +71,45 @@ and asks each runnable class for its runnable methods).
 ```
 
 ![file patterns](https://s3.amazonaws.com/josh.cheek/mrspec/file-patterns.png)
+
+
+### Fail Fast and Tagging
+
+Here, we see that we have the ability to run all the tests until one fails (the `--fail-fast` flag).
+We can also add metadata to classes using `classmeta`, and individual tests using `meta`.
+This allows us to do things like easily switch which tests are targeted from the command-line.
+
+```ruby
+# file: test.rb
+
+# Here, we tag the `NoFailures` class with `them_passing_tests`
+# And the `TwoFailures` class with `them_failing_tests`
+class NoFailures < Minitest::Test
+  classmeta them_passing_tests: true
+
+  def test_1() end
+  def test_2() end
+end
+
+class TwoFailures < Minitest::Test
+  classmeta them_failing_tests: true
+
+  # I like short tagnames, b/c usually my use is transient.
+  # So I can come mark the ones I want to run, and keep running them until they're fixed.
+  # The tags are correct, even if I change a test name or its position moves!
+  meta f1: true
+  def test_3
+    raise 'first failure'
+  end
+
+  meta f2: true
+  def test_4
+    raise 'second failure'
+  end
+end
+```
+
+![Examples of Tagging](https://s3.amazonaws.com/josh.cheek/mrspec/tagging.png)
 
 
 ### Failures, Errors, Skips
