@@ -7,7 +7,7 @@ Feature: mrspec
     Given I run 'ruby -e "puts Dir[%(**/*_{spec,test}.rb)]" | xargs rm'
 
 
-  Scenario: Finds spec/**/*_spec.rb and test/**/*_test.rb
+  Scenario: Finds spec/**/*_spec.rb and test/**/*_test.rb and test/**/test_*.rb
     Given the file "spec/a_spec.rb":
     """
     RSpec.describe 'a' do
@@ -36,9 +36,25 @@ Feature: mrspec
       end
     end
     """
+    And the file "test/dir/test_e.rb":
+    """
+    require 'minitest'
+    class ETest < Minitest::Test
+      def test_passes
+      end
+    end
+    """
+    And the file "test/a_test_file.rb":
+    """
+    raise "I should not be loaded!"
+    """
+    And the file "spec/a_spec_file.rb":
+    """
+    raise "I should not be loaded!"
+    """
     When I run 'mrspec -f json'
     Then the program ran successfully
-    And stdout includes "4 examples"
+    And stdout includes "5 examples"
     And stdout includes "0 failures"
 
 

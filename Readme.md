@@ -32,7 +32,7 @@ That rakefile thing is bullshit.
 Nuances
 -------
 
-Changes the default pattern to look for any files suffixed with `_test.rb` and `_spec.rb`
+Changes the default pattern to look for any files suffixed with `_test.rb` or `_spec.rb`, or prefixed with `test_`
 (RSpec, by itself, only looks for suffixes of `_spec.rb`).
 
 Changes the default search directories to be `test` and `spec`
