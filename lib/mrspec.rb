@@ -1,26 +1,25 @@
 # presumably this is loose enough to not whine all the time, but tight enough to not break
-gem 'rspec',    '~> 3.0'
-gem 'minitest', '~> 5.0'
-
 require 'rspec/core'
 require 'minitest'
 
+# Allow Minitest to support RSpec's metadata (eg tagging)
+# Thus you can tag a test or a class, and then pass `-t mytag` to mrspec,
+# and it will only run the tagged code.
 class << Minitest::Runnable
-  # adds metadata to the class
+  # Add metadata to the current class
   def classmeta(metadata)
     class_metadata.merge! metadata
+  end
+
+  # Add metadata to the next defined test
+  def meta(metadata)
+    pending_metadata.merge! metadata
   end
 
   def class_metadata
     @selfmetadata ||= {}
   end
 
-  # adds metadata to the next test defined
-  def meta(metadata)
-    pending_metadata.merge! metadata
-  end
-
-  # the tests' metadata
   def example_metadata
     @metadata ||= Hash.new { |metadata, mname| metadata[mname] = {} }
   end
@@ -38,7 +37,10 @@ class << Minitest::Runnable
 end
 
 
+# The code that imports Minitest into RSpec
 module MRspec
+  VERSION = '1.0.0'
+
   def self.group_name(klass)
     klass.inspect.sub /Test$/, ''
   end
@@ -85,6 +87,7 @@ module MRspec
 end
 
 
+# Custom runner to gain access to configuration at the correct point in the lifecycle
 class MRspec::Runner < RSpec::Core::Runner
   def initialize(*)
     super
@@ -95,6 +98,7 @@ class MRspec::Runner < RSpec::Core::Runner
 end
 
 
+# Custom configuration to gain access to configuration at the correct point in the lifecycle
 class MRspec::Configuration < RSpec::Core::Configuration
   def load_spec_files(*)
     super                  # will load the files
@@ -105,11 +109,10 @@ end
 
 RSpec.configuration = MRspec::Configuration.new
 
+# Could maybe place this in MRspec::Configuration#initialize
 RSpec.configure do |config|
   config.disable_monkey_patching!
   config.filter_gems_from_backtrace 'minitest'
   config.backtrace_exclusion_patterns << /mrspec\.rb$/
   config.pattern = config.pattern.sub('_spec.rb', '_{spec,test}.rb') # look for files suffixed with both _spec and _test
 end
-
-
