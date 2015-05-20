@@ -1,4 +1,5 @@
-# The code that imports Minitest into RSpec
+require 'mrspec/minitest_assertion_for_rspec'
+
 module MRspec
   module TransliterateMinitest
     def self.group_name(klass)
@@ -32,12 +33,17 @@ module MRspec
       metadata = klass.example_metadata[mname.intern]
       example = example_group.example example_name(mname), metadata do
         instance = Minitest.run_one_method klass, mname
-        instance.passed?  and next
-        instance.skipped? and pending 'skipped'
-        raise instance.failure
+        next              if instance.passed?
+        pending 'skipped' if instance.skipped?
+        raise TransliterateMinitest.wrap_error instance.failure.error
       end
 
       fix_metadata example.metadata, klass.instance_method(mname)
+    end
+
+    def self.wrap_error(error)
+      return error unless error.kind_of? Minitest::Assertion
+      MinitestAssertionForRSpec.new error
     end
 
     def self.fix_metadata(metadata, method)

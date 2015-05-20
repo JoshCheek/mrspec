@@ -332,7 +332,34 @@ Feature: mrspec
     And  stdout includes "tagged with 1 only"
     And  stdout includes "untagged"
 
-  Scenario: Intelligently formats RSpec's assertions
+  Scenario: Intelligently formats Minitest's assertions
+    Given the file "test/some_assertions.rb":
+    """
+    RSpec.describe 'a' do
+      it('fails1') { expect('rspec-1').to eq 'rspec-2' }
+      it('fails2') { expect(%w[rspec a b c]).to include 'd' }
+    end
+
+    class A < Minitest::Test
+      def test_fails1() assert_equal 'minitest-1', 'minitest-2' end
+      def test_fails2() assert_includes %w[minitest a b c], 'd' end
+    end
+    """
+    When I run 'mrspec --no-color test/some_assertions.rb'
+    # RSpec eq
+    Then stdout includes 'expected: "rspec-2"'
+    And  stdout includes '     got: "rspec-1"'
+    # Minitest assert_equal
+    And  stdout includes 'Expected: "minitest-1"'
+    And  stdout includes '  Actual: "minitest-2"'
+
+    # RSpec includes
+    And  stdout includes 'expected ["rspec", "a", "b", "c"] to include "d"'
+    # Minitest assert_includes
+    And  stdout includes 'Expected ["minitest", "a", "b", "c"] to include "d"'
+
+    # Doesn't print Minitest::Assertion class, as if it's an exception
+    And  stdout does not include "Minitest::Assertion"
 
   Scenario: Respects Minitest's lifecycle hooks
     Given the file "test/lifecycle_test.rb":
