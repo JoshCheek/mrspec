@@ -15,32 +15,79 @@ class TestMRspec < Minitest::Spec
   end
 
   describe 'registering tests' do
-    it 'registers Minitest::Test tests with RSpec' do
+    it 'registers Minitest::Test tests with RSpec, using the class name' do
       test1 = a_test_named 'First'
       test2 = a_test_named 'Second'
       MRspec::DeclareMinitests.wrap_classes mock_rspec, [test1, test2]
       assert_equal ['First', 'Second'], mock_rspec.group_names
     end
 
-    it 'registers Minitest::Spec tests with RSpec' do
+    it 'registers Minitest::Spec tests with RSpec, using the spec description' do
       spec1 = a_spec_named 'spec 1'
       spec2 = a_spec_named 'spec 2'
       MRspec::DeclareMinitests.wrap_classes mock_rspec, [test1, test2]
       assert_equal ['spec 1', 'spec 2'], mock_rspec.group_names
     end
 
-    it 'registers RSpec::Core::ExampleGroup tests with RSpec'
-
     describe 'descriptions' do
-      it 'registers the class name as the description'
-      it 'removes leading `Test` in the class name, from the description'
-      it 'removes trailing `Test` in the class name, from the description'
+      def description_for(class_name)
+        MRspec::DeclareMinitests.group_name a_test_named(class_name)
+      end
+
+      it 'removes leading `Test` in the class name, from the description' do
+        assert_equal 'ClassName', description_for('ClassName')
+        assert_equal 'ClassName', description_for('TestClassName')
+      end
+
+      it 'removes trailing `Test` in the class name, from the description' do
+        assert_equal 'ClassName', description_for('ClassName')
+        assert_equal 'ClassName', description_for('ClassNameTest')
+      end
+
+      it 'can deals with anonymous classes (nil class name) by using their to_s' do
+        klass1       = a_test_named nil
+        description1 = MRspec::DeclareMinitests.group_name klass1
+
+        klass2       = a_test_named nil
+        description2 = MRspec::DeclareMinitests.group_name klass2
+
+        assert_match /^Anonymous Minitest for class #<Class:0x/, description1
+
+        # Just double checking it's bypassing this code that makes them all have the same name:
+        # https://github.com/seattlerb/minitest/blob/f1081566ec6e9e391628bde3a26fb057ad2576a8/lib/minitest/assertions.rb#L118
+        refute_equal description1, description2
+      end
+
+      it 'can deal with symol or string names' do
+        assert_equal 'ClassName', description_for('ClassName')
+        assert_equal 'ClassName', description_for(:ClassName)
+      end
     end
 
-    describe 'test names' do
-      it 'removes leading `test_` in the method name, from the test name'
-      it 'removes leading `test_nnnn_` in the method name, from the test name'
-      it 'translates underscores to spaces'
+    describe 'example names' do
+      def example_name_for(method_name)
+        MRspec::DeclareMinitests.example_name method_name
+      end
+
+      it 'removes leading `test_` in the method name, from the test name' do
+        assert_equal 'methodname', example_name_for('methodname')
+        assert_equal 'methodname', example_name_for('test_methodname')
+      end
+
+      it 'removes leading `test_nnnn_` in the method name, from the test name' do
+        assert_equal 'methodname', example_name_for('methodname')
+        assert_equal 'methodname', example_name_for('test_0000_methodname')
+        assert_equal '000 methodname', example_name_for('test_000_methodname')
+      end
+
+      it 'translates underscores to spaces' do
+        assert_equal 'a method name', example_name_for('a_method_name')
+      end
+
+      it 'can deal with string or symbol names' do
+        assert_equal 'methodname', example_name_for('methodname')
+        assert_equal 'methodname', example_name_for(:methodname)
+      end
     end
 
     describe 'metadata' do

@@ -11,7 +11,12 @@ module MRspec
     end
 
     def group_name(klass)
-      klass.name.sub(/^Test/, '').sub(/Test$/, '')
+      if klass.name
+        klass.name.to_s.sub(/^Test/, '').sub(/Test$/, '')
+      else
+        inspection = Kernel.instance_method(:inspect).bind(klass).call
+        "Anonymous Minitest for class #{inspection}"
+      end
     end
 
     def example_name(method_name)
@@ -19,7 +24,7 @@ module MRspec
       #   https://github.com/seattlerb/minitest/blob/f1081566ec6e9e391628bde3a26fb057ad2576a8/lib/minitest/test.rb#L62
       # remove test_0001_, where the number increments
       #   https://github.com/seattlerb/minitest/blob/f1081566ec6e9e391628bde3a26fb057ad2576a8/lib/minitest/spec.rb#L218-222
-      method_name.sub(/^test_(?:\d{4}_)?/, '').tr('_', ' ')
+      method_name.to_s.sub(/^test_(?:\d{4}_)?/, '').tr('_', ' ')
     end
 
     def init_minitest(minitest)
