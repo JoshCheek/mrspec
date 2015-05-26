@@ -3,7 +3,7 @@
 mrspec
 ======
 
-Minitest and RSpec, sitting in a tree...
+Minitest and RSpec, sitting in a tree, T. E. S. T. I. N. G!
 
 Runs Minitest tests using RSpec's runner.
 Also runs RSpec's tests, so if you want to use them side-by-side,
@@ -137,6 +137,13 @@ end
 
 ![Examples of Tagging](https://s3.amazonaws.com/josh.cheek/mrspec/tagging.png)
 
+
+Default configuration
+---------------------
+
+You can place a file named `.rspec` in your home directory with command-line arguments in it.
+These will be used as defaults when you run `mrspec` or `rspec`.
+[Here](https://github.com/JoshCheek/dotfiles/blob/5948132cd2367ef3b86fd2ce5351948a65d7aec7/rspec) is mine.
 
 
 Why?
