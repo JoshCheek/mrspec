@@ -14,6 +14,12 @@ module Mock
       define_singleton_method(:name) { name }
     end
   end
+
+  def a_spec_named(name)
+    skip 'Not worth figuring this out right now'
+    Class.new Mock::MinitestSpec do
+    end
+  end
 end
 
 class Mock::MinitestTest < ::Minitest::Test

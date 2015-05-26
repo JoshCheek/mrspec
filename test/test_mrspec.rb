@@ -22,7 +22,13 @@ class TestMRspec < Minitest::Spec
       assert_equal ['First', 'Second'], mock_rspec.group_names
     end
 
-    it 'registers Minitest::Spec tests with RSpec'
+    it 'registers Minitest::Spec tests with RSpec' do
+      spec1 = a_spec_named 'spec 1'
+      spec2 = a_spec_named 'spec 2'
+      MRspec::DeclareMinitests.wrap_classes mock_rspec, [test1, test2]
+      assert_equal ['spec 1', 'spec 2'], mock_rspec.group_names
+    end
+
     it 'registers RSpec::Core::ExampleGroup tests with RSpec'
 
     describe 'descriptions' do
