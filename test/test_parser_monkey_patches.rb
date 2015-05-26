@@ -1,4 +1,5 @@
 require 'minitest/spec'
+require 'support/helper'
 
 class TestParserMonkeyPatches < Minitest::Spec
   Parser = RSpec::Core::Parser

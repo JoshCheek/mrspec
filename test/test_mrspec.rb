@@ -1,8 +1,11 @@
 require 'minitest/spec'
-require 'mock'
+require 'support/helper'
+require 'support/mock'
+
 
 # Just wrote down the behaviour,
-# but as of right now, it's not worth the effort of writing these as unit tests'
+# but as of right now, it's not worth the effort of writing all of them,
+# the cukes test all this behaviour, already
 
 class TestMRspec < Minitest::Spec
   include ::Mock
