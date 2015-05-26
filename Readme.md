@@ -204,12 +204,15 @@ There are 2 reasons for this:
    just use the namespaced methods, or create your own methods to wrap the assertion syntax.
    I'm looking forward to when this feature is removed altogether.
 
+Only expected to support Rubies in the [.travis.yml](https://github.com/JoshCheek/mrspec/blob/fa1945d3d4941a90a3272020b51468dfb42f8212/.travis.yml).
+
 
 Running the tests
 -----------------
 
 ```sh
 $ bundle
+$ bundle exec bin/mrspec
 $ bundle exec cucumber
 ```
 
@@ -221,7 +224,7 @@ and often not written in Ruby.
 
 What about the `test` directory?
 I decided to describe all the behaviour that can be unit tested,
-but haven't taken the time to implement them yet,
+but haven't taken the time to implement most of them yet,
 because I don't currently have any features I'm trying to add.
 As I maintain this, though, I'll begin implementing them,
 as it will be easier in the end :)
