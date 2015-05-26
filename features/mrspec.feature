@@ -469,7 +469,18 @@ Feature: mrspec
     And  stdout includes "NO ERROR"
     And  stdout includes "NO UNEXPECTED DEPS"
 
+
   Scenario: The help screen is custom to mrspec
     When I run "mrspec -h"
     Then stdout includes "Usage: mrspec"
     # Probably add more later
+
+
+  # Only specifying the major version, so I get enough to be confident
+  # but not enough to be too volatile
+  Scenario: prints mrspec, rspec, and minitest versions for --version
+    When I run "mrspec --version"
+    Then the program ran successfully
+    And  stdout includes "mrspec     0."
+    And  stdout includes "rspec-core 3."
+    And  stdout includes "minitest   5."

@@ -25,19 +25,7 @@ class TestParserMonkeyPatches < Minitest::Spec
   end
 
   describe '#mrspec_parser' do
-    def options
-      @options ||= {}
-    end
-
-    def mrspec_option_parser
-      @mrspec_option_parser ||= Parser.new.mrspec_parser options
-    end
-
-    def rspec_option_parser
-      @rspec_option_parser ||= Parser.new.rspec_parser options
-    end
-
-    def record_version(option_parser, flag)
+    def record_hostile_parsing(option_parser, flag)
       stdout, stderr, *rest = capture_io do
         begin option_parser.parse([flag])
         rescue SystemExit
@@ -50,20 +38,21 @@ class TestParserMonkeyPatches < Minitest::Spec
 
     it 'returns the original #rspec_parser' do
       # just showing that it does RSpec parsery things
-      mrspec_option_parser.parse ['-I', 'somepath']
+      options = {}
+      Parser.new.mrspec_parser(options).parse(['-I', 'somepath'])
       assert_equal options[:libs], ['somepath']
     end
 
     it 'modifies the description to replace uses of rspec with uses of mrpspec' do
-      assert_match /\bmrspec\b/, mrspec_option_parser.banner
-      refute_match /\brspec\b/,  mrspec_option_parser.banner
+      assert_match /\bmrspec\b/, Parser.new.mrspec_parser({}).banner
+      refute_match /\brspec\b/,  Parser.new.mrspec_parser({}).banner
     end
 
     it 'overrides -v and --version includes the Mrspec version, the RSpec::Core version, and the Minitest version' do
-      rspec_version  = record_version Parser.new.rspec_parser({}),  '--version'
-      rspec_v        = record_version Parser.new.rspec_parser({}),  '-v'
-      mrspec_version = record_version Parser.new.mrspec_parser({}), '--version'
-      mrspec_v       = record_version Parser.new.mrspec_parser({}), '-v'
+      rspec_version  = record_hostile_parsing Parser.new.rspec_parser({}),  '--version'
+      rspec_v        = record_hostile_parsing Parser.new.rspec_parser({}),  '-v'
+      mrspec_version = record_hostile_parsing Parser.new.mrspec_parser({}), '--version'
+      mrspec_v       = record_hostile_parsing Parser.new.mrspec_parser({}), '-v'
 
       # RSpec version parser defines both of these flags to return its version
       assert_equal rspec_version, rspec_v
@@ -76,6 +65,10 @@ class TestParserMonkeyPatches < Minitest::Spec
       assert_equal mrspec_version, mrspec_v
       assert_equal expected, mrspec_version
     end
+
+    # Giving up on making sure these are equivalent, it's not the end of the world if they aren't
+    # I'm basically at a point where I think that no one should use OptionParser
+    it 'sets the correct description for the versions'
   end
 
   it 'stores the current parser in .parser_method' do
