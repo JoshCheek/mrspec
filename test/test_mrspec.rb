@@ -54,6 +54,10 @@ class TestMRspec < Minitest::Spec
   end
 
   describe 'toplevel `describe`' do
-    it 'comes from Minitest::Spec'
+    it 'comes from Minitest::Spec' do
+      filename, _linenum = TOPLEVEL_BINDING.method(:describe).source_location
+      assert_match /minitest/, filename
+      refute_match /rspec/,    filename
+    end
   end
 end
