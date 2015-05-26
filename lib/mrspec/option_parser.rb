@@ -13,7 +13,20 @@ class RSpec::Core::Parser
 
   # Ours calls RSpec's, then modifies values on the returned parser
   def mrspec_parser(*args, &b)
-    rspec_parser(*args, &b).tap { |parser| parser.banner.gsub! /\brspec\b/, 'mrspec' }
+    option_parser = rspec_parser(*args, &b)
+
+    # update the program name
+    option_parser.banner.gsub! /\brspec\b/, 'mrspec'
+
+    # print mrspec version, and dependency versions
+    option_parser.on('-v', '--version', 'Display the version.') do
+      puts "mrspec     #{MRspec::VERSION}\n"\
+           "rspec-core #{RSpec::Core::Version::STRING}\n"\
+           "minitest   #{Minitest::VERSION}\n"
+      exit
+    end
+
+    option_parser
   end
 
   # A place to store which method `parser` actually resolves to
