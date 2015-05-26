@@ -9,9 +9,9 @@ module Mock
 
   # This name can't match /^test_/, or https://github.com/seattlerb/minitest/blob/f1081566ec6e9e391628bde3a26fb057ad2576a8/lib/minitest/spec.rb#L167-171
   # ...legit thought I'd forgotten the object model for a moment there O.o
-  def a_test_named(name)
-    Class.new Mock::MinitestTest do
-      define_singleton_method(:name) { name }
+  def a_test_named(name, &block)
+    Class.new(Mock::MinitestTest, &block).tap do |klass|
+      klass.define_singleton_method(:name) { name }
     end
   end
 

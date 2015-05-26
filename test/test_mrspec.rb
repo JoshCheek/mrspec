@@ -91,12 +91,56 @@ class TestMRspec < Minitest::Spec
     end
 
     describe 'metadata' do
-      it 'aggregates metadata on the class with classmeta'
-      it 'allows for multiple metadata keys to be provided in one classmeta call'
-      it 'aggregates multiple calls to classmeta'
-      it 'aggregates metadata on the next test to be defined, with meta'
-      it 'allows for multiple metadata keys to be provided in one meta call'
-      it 'aggregates multiple calls to meta'
+      it 'aggregates metadata on the class with classmeta' do
+        klass = a_test_named('a') { classmeta a: true }
+        assert_equal({a: true}, klass.class_metadata)
+      end
+
+      it 'allows for multiple metadata keys to be provided in one classmeta call' do
+        klass = a_test_named('a') { classmeta a: true, b: true }
+        assert_equal({a: true, b: true}, klass.class_metadata)
+      end
+
+      it 'aggregates multiple calls to classmeta' do
+        klass = a_test_named 'a' do
+          classmeta a: true
+          classmeta b: true
+        end
+        assert_equal({a: true, b: true}, klass.class_metadata)
+      end
+
+      it 'aggregates metadata on the next test to be defined, with meta' do
+        klass = a_test_named 'a' do
+          meta a: true
+          def test_a; end
+
+          def test_b; end
+
+          meta c: true
+          def test_c; end
+        end
+
+        assert_equal({a: true}, klass.example_metadata[:test_a])
+        assert_equal({},        klass.example_metadata[:test_b])
+        assert_equal({c: true}, klass.example_metadata[:test_c])
+      end
+
+      it 'allows for multiple metadata keys to be provided in one meta call' do
+        klass = a_test_named 'a' do
+          meta a: true, b: true
+          def test_a; end
+        end
+        assert_equal({a: true, b: true}, klass.example_metadata[:test_a])
+      end
+
+      it 'aggregates multiple calls to meta' do
+        klass = a_test_named 'a' do
+          meta a: true
+          meta b: true
+          def test_a; end
+        end
+        assert_equal({a: true, b: true}, klass.example_metadata[:test_a])
+      end
     end
   end
 
