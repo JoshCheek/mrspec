@@ -478,9 +478,17 @@ Feature: mrspec
 
   # Only specifying the major version, so I get enough to be confident
   # but not enough to be too volatile
-  Scenario: prints mrspec, rspec, and minitest versions for --version
+  Scenario: Prints mrspec, rspec, and minitest versions for --version
     When I run "mrspec --version"
     Then the program ran successfully
     And  stdout includes "mrspec     0."
     And  stdout includes "rspec-core 3."
     And  stdout includes "minitest   5."
+
+
+  Scenario: Adds absolute path to `./test` to the $LOAD_PATH, if it exists
+    Given the file "test/my_helper.rb" "puts 'I got loaded!'"
+    And   the file "test/some_test.rb" "Dir.chdir('/') { require 'my_helper' }"
+    When I run "mrspec"
+    Then the program ran successfully
+    And stdout includes "I got loaded!"

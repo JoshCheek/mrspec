@@ -1,5 +1,5 @@
 require 'minitest/spec'
-require_relative 'mock' # TODO: Should add test to the LOAD_PATH, like spec is
+require 'mock'
 
 # Just wrote down the behaviour,
 # but as of right now, it's not worth the effort of writing these as unit tests'

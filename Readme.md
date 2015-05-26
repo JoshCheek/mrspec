@@ -190,6 +190,9 @@ Changes the default pattern to look for any files suffixed with `_test.rb` or `_
 Changes the default search directories to be `test` and `spec`
 (RSpec, by itself, only looks in `spec`).
 
+Adds `test` to the `$LOAD_PATH`, if it exists.
+(RSpec, by itself, only adds `spec`).
+
 Turns off monkey patching, so you cannot use RSPec's toplevel describe, or `should`.
 There are 2 reasons for this:
 
@@ -200,9 +203,8 @@ There are 2 reasons for this:
    which means that even if you don't use it, it will still interfere with `Minitest::Spec`
    (removing methods allows method lookup to find superclass definitions,
    but undefining them ends method lookup.)
-2. You should just not do that in general. Monkey patching is a bad plan, all around,
+2. You should avoid things like this, in general. Monkey patching is a bad plan, all around,
    just use the namespaced methods, or create your own methods to wrap the assertion syntax.
-   I'm looking forward to when this feature is removed altogether.
 
 Only expected to support Rubies in the [.travis.yml](https://github.com/JoshCheek/mrspec/blob/fa1945d3d4941a90a3272020b51468dfb42f8212/.travis.yml).
 
