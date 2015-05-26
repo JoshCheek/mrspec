@@ -219,6 +219,13 @@ which I mostly test with Cucumber and [Haiti](https://github.com/JoshCheek/haiti
 as they are usually heavily oriented towards integration,
 and often not written in Ruby.
 
+What about the `test` directory?
+I decided to describe all the behaviour that can be unit tested,
+but haven't taken the time to implement them yet,
+because I don't currently have any features I'm trying to add.
+As I maintain this, though, I'll begin implementing them,
+as it will be easier in the end :)
+
 
 Attribution
 -----------
