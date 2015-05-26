@@ -12,7 +12,7 @@ module MRspec
 
     def load_spec_files(*)
       super
-      MRspec::DeclareMinitests.call
+      MRspec::DeclareMinitests.call(RSpec, Minitest, Minitest::Runnable.runnables)
     end
   end
 end

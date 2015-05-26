@@ -5,9 +5,9 @@ module MRspec
   module DeclareMinitests
     extend self
 
-    def self.call
-      init_minitest
-      wrap_classes Minitest::Runnable.runnables
+    def self.call(rspec, minitest, klasses)
+      init_minitest minitest
+      wrap_classes rspec, klasses
     end
 
     def group_name(klass)
@@ -22,18 +22,18 @@ module MRspec
       method_name.sub(/^test_(?:\d{4}_)?/, '').tr('_', ' ')
     end
 
-    def init_minitest
-      Minitest.reporter = Minitest::CompositeReporter.new # we're not using the reporter, but some plugins, (eg minitest/pride) expect it to be there
-      Minitest.load_plugins
-      Minitest.init_plugins Minitest.process_args([])
+    def init_minitest(minitest)
+      minitest.reporter = minitest::CompositeReporter.new # we're not using the reporter, but some plugins, (eg minitest/pride) expect it to be there
+      minitest.load_plugins
+      minitest.init_plugins minitest.process_args([])
     end
 
-    def wrap_classes(klasses)
-      klasses.each { |klass| wrap_class klass }
+    def wrap_classes(rspec, klasses)
+      klasses.each { |klass| wrap_class rspec, klass }
     end
 
-    def wrap_class(klass)
-      example_group = RSpec.describe group_name(klass), klass.class_metadata
+    def wrap_class(rspec, klass)
+      example_group = rspec.describe group_name(klass), klass.class_metadata
       klass.runnable_methods.each do |method_name|
         wrap_test example_group, klass, method_name
       end

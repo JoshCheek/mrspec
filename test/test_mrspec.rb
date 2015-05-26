@@ -1,9 +1,12 @@
 require 'minitest/spec'
+require_relative 'mock' # TODO: Should add test to the LOAD_PATH, like spec is
 
 # Just wrote down the behaviour,
 # but as of right now, it's not worth the effort of writing these as unit tests'
 
 class TestMRspec < Minitest::Spec
+  include ::Mock
+
   describe 'default files and patterns' do
     it 'looks in the test and spec directories'
     it 'finds files that end in _spec.rb, recursively'
@@ -12,7 +15,13 @@ class TestMRspec < Minitest::Spec
   end
 
   describe 'registering tests' do
-    it 'registers Minitest::Test tests with RSpec'
+    it 'registers Minitest::Test tests with RSpec' do
+      test1 = a_test_named 'First'
+      test2 = a_test_named 'Second'
+      MRspec::DeclareMinitests.wrap_classes mock_rspec, [test1, test2]
+      assert_equal ['First', 'Second'], mock_rspec.group_names
+    end
+
     it 'registers Minitest::Spec tests with RSpec'
     it 'registers RSpec::Core::ExampleGroup tests with RSpec'
 
