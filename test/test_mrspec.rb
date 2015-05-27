@@ -155,6 +155,7 @@ class TestMRspec < Minitest::Spec
     it 'omits minitest code from the backtrace'
     it 'omits rspec code from the backtrace'
     it 'omits mrspec code from the backtrace'
+    it 'allows Minitest::Spec to be declared without bodies, and backtrace shows the call to the it block'
   end
 
   describe 'identifying which test to run' do

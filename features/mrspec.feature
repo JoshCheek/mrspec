@@ -88,6 +88,39 @@ Feature: mrspec
     And stdout does not include "Minitest.run_one_method"
 
 
+  Scenario: Minitest::Spec definitions without bodies show line of the declaration in the backtrace, and not the full backtrace
+    Given the file "skip_spec.rb":
+    """
+    require 'minitest/spec'
+    describe 'a' do
+      it 'has no body'
+      it('calls skip') { skip }
+    end
+
+    class A < Minitest::Spec
+      it 'has no body'
+      it('calls skip') { skip }
+    end
+
+    class Wat < Minitest::Test
+      extend Minitest::Spec::DSL
+      register_spec_type /^lol/, self
+    end
+    describe 'lol' do
+      it 'has no body'
+      it('calls skip') { skip }
+    end
+    """
+    When I run "mrspec skip_spec.rb"
+    Then stdout includes "skip_spec.rb:3"
+    Then stdout includes "skip_spec.rb:4"
+    Then stdout includes "skip_spec.rb:8"
+    Then stdout includes "skip_spec.rb:9"
+    Then stdout includes "skip_spec.rb:17"
+    Then stdout includes "skip_spec.rb:18"
+    And stdout does not include "/mrspec/"
+
+
   Scenario: Works with Minitest::Test, choosing intelligent names
     Given the file "some_test.rb":
     """
@@ -312,6 +345,47 @@ Feature: mrspec
     And  stdout includes "tagged with 1 and 2"
     And  stdout includes "tagged with 1 only"
     And  stdout includes "untagged"
+
+
+  Scenario: Can add metadata to Minitest::Specs
+    Given the file "a_spec.rb":
+    """
+    require 'minitest/spec'
+
+    describe 'First' do
+      classmeta runthis: true
+      it('spec1') { }
+    end
+
+    class MySpec < Minitest::Spec
+      meta runthis: true
+      it('spec2') { }
+      it('spec3') { }
+      it('spec4') { }
+    end
+
+    class Wat < Minitest::Test
+      extend Minitest::Spec::DSL
+      register_spec_type /^Lol/, self
+
+      def bbq
+        'rofl'
+      end
+    end
+
+    describe 'LolSpec!' do
+      meta runthis: true
+      it 'has different inheritance' do
+        assert self.kind_of? Wat
+      end
+    end
+    """
+    When I run 'mrspec -t runthis a_spec.rb'
+    Then the program ran successfully
+    And stdout includes "3 examples"
+    And stdout includes "0 failures"
+
+
 
   Scenario: Intelligently formats Minitest's assertions
     Given the file "test/some_assertions.rb":
