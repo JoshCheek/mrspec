@@ -1,5 +1,6 @@
 require 'mrspec/version'
 require 'mrspec/minitest_metadata'
+require 'mrspec/fix_backtraces_on_minitest_spec'
 require 'mrspec/runner'
 require 'mrspec/configuration'
 require 'mrspec/option_parser'
