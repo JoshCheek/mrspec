@@ -50,6 +50,29 @@ Feature: mrspec
     And stdout includes "0 failures"
 
 
+  Scenario: It works when there is only a spec dir
+    Given the file "spec/something_spec.rb":
+    """
+    RSpec.describe 'a' do
+      it('b') { }
+    end
+    """
+    When I run "mrspec"
+    Then the program ran successfully
+
+
+  Scenario: It works when there is only a test dir
+    Given the file "test/something_spec.rb":
+    """
+    class A < Minitest::Test
+      def test_b
+      end
+    end
+    """
+    When I run "mrspec"
+    Then the program ran successfully
+
+
   Scenario: Registers minitest tests as RSpec tests, recording skips, passes, errors, failures
     Given the file "some_test.rb":
     """
