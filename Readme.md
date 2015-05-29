@@ -10,9 +10,14 @@ Also runs RSpec's tests, so if you want to use them side-by-side,
 this will do it.
 
 
+Pronounciation
+--------------
+
+"Mister Spec"
+
+
 Examples
 --------
-
 
 ### Run specs and tests in tandem
 
@@ -180,6 +185,7 @@ But the RSpec runner is very nice, it has a lot of features that I use frequentl
 Someone suggested running Minitest with the RSpec runner (see attribution section),
 and I thought that was an interesting idea that could have value if it worked.
 ...so, here we are.
+
 
 Nuances
 -------
