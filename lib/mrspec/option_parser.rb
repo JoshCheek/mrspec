@@ -22,9 +22,9 @@ class RSpec::Core::Parser
     # calling exit and toplevel puts, b/c that's what RSpec's does https://github.com/rspec/rspec-core/blob/c7c1154934c42b5f6905bb7bd22025fe6c8a816c/lib/rspec/core/option_parser.rb#L290
     # and I don't feel like figuring out how to work around it.
     option_parser.on('-v', '--version', 'Display the version.') do
-      puts "mrspec     #{MRspec::VERSION}\n"\
-           "rspec-core #{RSpec::Core::Version::STRING}\n"\
-           "minitest   #{Minitest::VERSION}\n"
+      $stdout.puts "mrspec     #{MRspec::VERSION}\n"\
+                   "rspec-core #{RSpec::Core::Version::STRING}\n"\
+                   "minitest   #{Minitest::VERSION}\n"
       exit
     end
 
