@@ -70,6 +70,24 @@ class TestParserMonkeyPatches < Minitest::Spec
     # Giving up on making sure these are equivalent, it's not the end of the world if they aren't
     # I'm basically at a point where I think that no one should use OptionParser
     it 'sets the correct description for the versions'
+
+    it 'includes the what_weve_got_here_is_an_error_to_communicate formatter in the help screen' do
+      parser     = Parser.new.mrspec_parser({})
+      help       = record_hostile_parsing parser, '--help'
+      formatters = help.lines
+                       .drop_while { |l| l !~ /--format/ }
+                       .drop(1)
+                       .take_while { |l| l =~ /^\s*\[/ }
+      refute_empty formatters
+      indentation, initials = formatters.map { |formatter_line|
+                                [formatter_line[/^\s*/].length,
+                                 formatter_line[/\[.\]/]
+                                ]
+                              }.transpose
+      first_indentation = indentation.first
+      indentation.each { |i| assert_equal first_indentation, i }
+      assert_equal '[w]', initials.first
+    end
   end
 
   it 'stores the current parser in .parser_method' do

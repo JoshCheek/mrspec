@@ -28,6 +28,12 @@ class RSpec::Core::Parser
       exit
     end
 
+    format_description = option_parser.top.short['f'].desc
+    first_option       = format_description.find { |s| s[/\[[a-zA-Z]\]/] }
+    leading_whitespace = first_option[/^\s*/]
+    index              = format_description.index first_option
+    format_description.insert index, "#{leading_whitespace}[w]hat (we've got here is an error to communicate)"
+
     option_parser
   end
 

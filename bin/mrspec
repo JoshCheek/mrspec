@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'what_weve_got_here_is_an_error_to_communicate'
+
 # Load our lib
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require 'mrspec'
