@@ -10,6 +10,7 @@ class RSpec::Core::Parser
 
   # Save RSpec's parser
   alias rspec_parser parser
+  public :rspec_parser
 
   # Ours calls RSpec's, then modifies values on the returned parser
   def mrspec_parser(*args, &b)

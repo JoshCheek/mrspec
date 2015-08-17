@@ -40,20 +40,20 @@ class TestParserMonkeyPatches < Minitest::Spec
     it 'returns the original #rspec_parser' do
       # just showing that it does RSpec parsery things
       options = {}
-      Parser.new.mrspec_parser(options).parse(['-I', 'somepath'])
+      Parser.new([]).mrspec_parser(options).parse(['-I', 'somepath'])
       assert_equal options[:libs], ['somepath']
     end
 
     it 'modifies the description to replace uses of rspec with uses of mrpspec' do
-      assert_match /\bmrspec\b/, Parser.new.mrspec_parser({}).banner
-      refute_match /\brspec\b/,  Parser.new.mrspec_parser({}).banner
+      assert_match /\bmrspec\b/, Parser.new([]).mrspec_parser({}).banner
+      refute_match /\brspec\b/,  Parser.new([]).mrspec_parser({}).banner
     end
 
     it 'overrides -v and --version includes the Mrspec version, the RSpec::Core version, and the Minitest version' do
-      rspec_version  = record_hostile_parsing Parser.new.rspec_parser({}),  '--version'
-      rspec_v        = record_hostile_parsing Parser.new.rspec_parser({}),  '-v'
-      mrspec_version = record_hostile_parsing Parser.new.mrspec_parser({}), '--version'
-      mrspec_v       = record_hostile_parsing Parser.new.mrspec_parser({}), '-v'
+      rspec_version  = record_hostile_parsing Parser.new([]).rspec_parser({}),  '--version'
+      rspec_v        = record_hostile_parsing Parser.new([]).rspec_parser({}),  '-v'
+      mrspec_version = record_hostile_parsing Parser.new([]).mrspec_parser({}), '--version'
+      mrspec_v       = record_hostile_parsing Parser.new([]).mrspec_parser({}), '-v'
 
       # RSpec version parser defines both of these flags to return its version
       assert_equal rspec_version, rspec_v
@@ -72,7 +72,7 @@ class TestParserMonkeyPatches < Minitest::Spec
     it 'sets the correct description for the versions'
 
     it 'includes the what_weve_got_here_is_an_error_to_communicate formatter in the help screen' do
-      parser     = Parser.new.mrspec_parser({})
+      parser     = Parser.new([]).mrspec_parser({})
       help       = record_hostile_parsing parser, '--help'
       formatters = help.lines
                        .drop_while { |l| l !~ /--format/ }
@@ -103,9 +103,9 @@ class TestParserMonkeyPatches < Minitest::Spec
   it 'redefines #parser to use the parser in .parser_method' do
     # have to do it a bit roundabout, b/c OptionParser does not override #==, so it uses object equality
     Parser.parser_method = rspec_parser
-    assert_match /\brspec\b/, Parser.new.parser({}).banner
+    assert_match /\brspec\b/, Parser.new([]).parser({}).banner
 
     Parser.parser_method = mrspec_parser
-    assert_match /\bmrspec\b/, Parser.new.parser({}).banner
+    assert_match /\bmrspec\b/, Parser.new([]).parser({}).banner
   end
 end

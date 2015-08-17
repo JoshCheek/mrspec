@@ -10,6 +10,11 @@ module MRspec
       filter_gems_from_backtrace 'mrspec', 'minitest'
       self.pattern = pattern.sub '*_spec.rb', '{*_spec,*_test,test_*}.rb'
       self.default_formatter = WhatWeveGotHereIsAnErrorToCommunicate::RSpecFormatter
+      Module.class_eval do
+        def describe(*args, &block)
+          Kernel.instance_method(:describe).bind(self).call(*args, &block)
+        end
+      end
     end
 
     def load_spec_files(*)
