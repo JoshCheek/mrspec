@@ -3,8 +3,6 @@
 mrspec
 ======
 
-Minitest and RSpec, sitting in a tree, T. E. S. T. I. N. G!
-
 Runs Minitest tests using RSpec's runner.
 Also runs RSpec's tests, so if you want to use them side-by-side,
 this will do it.
