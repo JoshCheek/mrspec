@@ -165,9 +165,9 @@ But here are some frustrations I have with it as a test runner:
    and I am trying to figure out how to configure the test task to do that).
    The overhead of running additional processes can also be high:
    think how long Rails takes to start up, now imagine paying that twice every time you want to run your tests!
-1. It makes it difficult to dynamically alter my test invoation.
+1. It makes it difficult to dynamically alter my test invocation.
    With Minitest, you can pass `-n test_something` and it will only run the test named `test_something`,
-   but now I have to edit code tomake that happen.
+   but now I have to edit code to make that happen.
 
 Furthermore, if someone doesn't know about the test task, or it seems formidable, as it often does to new students
 (I'm a [teacher](http://turing.io/team)), then they won't use it. They instead run files one at a time.
