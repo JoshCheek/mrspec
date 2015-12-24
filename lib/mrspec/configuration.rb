@@ -10,6 +10,7 @@ module MRspec
       filter_gems_from_backtrace 'mrspec', 'minitest'
       self.pattern = pattern.sub '*_spec.rb', '{*_spec,*_test,test_*}.rb'
       self.default_formatter = WhatWeveGotHereIsAnErrorToCommunicate::RSpecFormatter
+      WhatWeveGotHereIsAnErrorToCommunicate::ExceptionRecorder.record_exception_bindings(self)
 
       [Module, TOPLEVEL_BINDING.eval('self').singleton_class].each do |klass|
         klass.class_eval do

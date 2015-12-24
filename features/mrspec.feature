@@ -589,3 +589,23 @@ Feature: mrspec
     When I run "mrspec"
     Then the program ran successfully
     And stdout includes "I got loaded!"
+
+  Scenario: Correctly hooks up everything up to enable advanced analysis features
+    Given the file "whatev.rb":
+    """
+    RSpec.describe 'MySpec' do
+      it('whatev') do
+        @abc = 123
+        @abd.even?
+      end
+    end
+
+    class MyTest < Minitest::Test
+      def test_whatev
+        @abc = 123
+        @abd.even?
+      end
+    end
+    """
+    When I run 'mrspec whatev.rb'
+    Then stdout includes "misspell"
