@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = %q{Allows you to run Minitest tests and specs with RSpec's runner, thus you can write both Minitest and RSpec, side-by-side, and take advantage of the many incredibly helpful features it supports (primarily: better formatters, --colour, --fail-fast, and tagging).}
   s.license     = "MIT"
 
-  s.files         = `git ls-files`.split("\n")
+  s.files         = `git ls-files`.split("\n") - Dir['mascots/*']
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = ['mrspec']
   s.require_paths = ['lib']
