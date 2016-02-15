@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.executables   = ['mrspec']
   s.require_paths = ['lib']
 
-  s.add_dependency "rspec-core", "~> 3.0"
+  s.add_dependency "rspec-core", "~> 3.2"
   s.add_dependency "minitest",   "~> 5.0"
   s.add_dependency "what_weve_got_here_is_an_error_to_communicate", "~> 0.0.7"
 
