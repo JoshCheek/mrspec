@@ -7,7 +7,7 @@ module MRspec
     def initialize(*)
       super
       disable_monkey_patching!
-      filter_gems_from_backtrace 'mrspec', 'minitest'
+      filter_gems_from_backtrace 'mrspec', 'minitest', 'interception', 'what_weve_got_here_is_an_error_to_communicate'
       self.pattern = pattern.sub '*_spec.rb', '{*_spec,*_test,test_*}.rb'
       self.default_formatter = WhatWeveGotHereIsAnErrorToCommunicate::RSpecFormatter
       WhatWeveGotHereIsAnErrorToCommunicate::ExceptionRecorder.record_exception_bindings(self)

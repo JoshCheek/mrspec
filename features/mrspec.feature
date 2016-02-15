@@ -184,7 +184,7 @@ Feature: mrspec
     And stdout includes '"full_description":"the description the example"'
 
 
-  Scenario: Filters the runner and minitest code out of the backtrace do
+  Scenario: Filters the runner, minitest code, interception, and what-we-ve-got-here-is-an-error-to-communicate out of the backtrace
     Given the file "some_test.rb":
     """
     class LotaStuffsTest < Minitest::Test
@@ -197,6 +197,8 @@ Feature: mrspec
     Then stdout does not include "minitest"
     And stdout does not include "mrspec.rb"
     And stdout does not include "bin/mrspec"
+    And stdout does not include "interception"
+    And stdout does not include "what_weve_got_here_is_an_error_to_communicate"
 
 
   Scenario: --fail-fast flag
