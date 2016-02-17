@@ -49,7 +49,7 @@ class TestParserMonkeyPatches < Minitest::Spec
       refute_match /\brspec\b/,  Parser.new([]).mrspec_parser({}).banner
     end
 
-    it 'overrides -v and --version includes the Mrspec version, the RSpec::Core version, and the Minitest version' do
+    it 'overrides -v and --version includes the Mrspec version, the RSpec::Core version, the Minitest version, and the ErrorToCommunicate version' do
       rspec_version  = record_hostile_parsing Parser.new([]).rspec_parser({}),  '--version'
       rspec_v        = record_hostile_parsing Parser.new([]).rspec_parser({}),  '-v'
       mrspec_version = record_hostile_parsing Parser.new([]).mrspec_parser({}), '--version'
@@ -62,7 +62,8 @@ class TestParserMonkeyPatches < Minitest::Spec
       # MRspec overrides both of these flags to print versions of all relevant libs
       expected = "mrspec     #{MRspec::VERSION}\n"\
                  "rspec-core #{RSpec::Core::Version::STRING}\n"\
-                 "minitest   #{Minitest::VERSION}\n"
+                 "minitest   #{Minitest::VERSION}\n"\
+                 "wwhhiae2c  #{ErrorToCommunicate::VERSION}\n"
       assert_equal mrspec_version, mrspec_v
       assert_equal expected, mrspec_version
     end

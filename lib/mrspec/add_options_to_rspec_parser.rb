@@ -25,7 +25,8 @@ class RSpec::Core::Parser
     option_parser.on('-v', '--version', 'Display the version.') do
       $stdout.puts "mrspec     #{MRspec::VERSION}\n"\
                    "rspec-core #{RSpec::Core::Version::STRING}\n"\
-                   "minitest   #{Minitest::VERSION}\n"
+                   "minitest   #{Minitest::VERSION}\n"\
+                   "wwhhiae2c  #{ErrorToCommunicate::VERSION}\n"
       exit
     end
 
