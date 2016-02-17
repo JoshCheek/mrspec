@@ -37,3 +37,20 @@ class TestFormatterConfiguration < Minitest::Spec
     end
   end
 end
+
+class TestOtherConfiguration < Minitest::Spec
+  def assert_colour(is_enabled, argv)
+    config = MRspec::Configuration.new
+    RSpec::Core::ConfigurationOptions.new(argv).configure(config)
+    assert_equal is_enabled, config.color_enabled?
+  end
+
+  it 'defaults colour to on' do
+    assert_colour true, []
+  end
+
+  it 'respects explicit choices to set colour off/on' do
+    assert_colour true,  ['--colour']
+    assert_colour false, ['--no-colour']
+  end
+end

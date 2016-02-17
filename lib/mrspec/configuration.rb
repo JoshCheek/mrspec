@@ -6,6 +6,12 @@ module MRspec
   class Configuration < RSpec::Core::Configuration
     def initialize(*)
       super
+      # Turn color on by default, b/c everyone I know that uses it uses colour, so make it opt-out rather than opt-in
+      # https://github.com/JoshCheek/mrspec/issues/12
+      # Defaulted here: https://github.com/rspec/rspec-core/blob/44afa9bd83e655b4d1fa60c0d73373a754aa479b/lib/rspec/core/configuration.rb#L367
+      # Exposed here:   https://github.com/rspec/rspec-core/blob/44afa9bd83e655b4d1fa60c0d73373a754aa479b/lib/rspec/core/configuration.rb#L715-L722
+      @color = true
+
       disable_monkey_patching!
       filter_gems_from_backtrace 'mrspec', 'minitest', 'interception', 'what_weve_got_here_is_an_error_to_communicate'
       self.pattern = pattern.sub '*_spec.rb', '{*_spec,*_test,test_*}.rb'
