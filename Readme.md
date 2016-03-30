@@ -235,6 +235,26 @@ because I don't currently have any features I'm trying to add.
 As I maintain this, though, I'll begin implementing them,
 as it will be easier in the end :)
 
+Run mrpsec as the Rake Test Task
+-------------------------------
+Add this to your Rakefile in your Rails App Root Dir
+below```Rails.application.load_tasks```
+
+```
+# ----- To run minitest is the bit that I added -----
+# I know it's ridiculous, but there isn't a better way, it's what RSpec does, too:
+# https://github.com/rspec/rspec-rails/blob/682a12067eab233c646057f984692e3b70749f32/lib/rspec/rails/tasks/rspec.rake#L2-L4
+tasks = Rake.application.instance_variable_get('@tasks')
+tasks['test'].clear_actions if tasks['test']
+tasks['spec'].clear_actions if tasks['spec']
+
+mrspec = Proc.new do
+  sh 'mrspec', '--fail-fast'
+end
+
+task :test, &mrspec
+task :spec, &mrspec
+```
 
 Attribution
 -----------
