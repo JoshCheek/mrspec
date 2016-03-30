@@ -237,8 +237,8 @@ as it will be easier in the end :)
 
 Run mrpsec as the Rake Test Task
 -------------------------------
-Add this to your Rakefile in your Rails App Root Dir
-below``ruby Rails.application.load_tasks``
+Add this to your `Rakefile` in your Rails App Root Dir
+below`Rails.application.load_tasks`
 
 ```ruby
 # ----- To run minitest is the bit that I added -----
