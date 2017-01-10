@@ -9,15 +9,17 @@ require 'support/mock'
 
 class TestMRspec < Minitest::Spec
   include ::Mock
-
   describe 'default files and patterns' do
+    classmeta default: true
     it 'looks in the test and spec directories'
+    meta recursive: true
     it 'finds files that end in _spec.rb, recursively'
     it 'finds files that end in _test.rb, recursively'
     it 'finds files that begin with test_ and end with .rb, recursively'
   end
 
   describe 'registering tests' do
+    classmeta register: true
     it 'registers Minitest::Test tests with RSpec, using the class name' do
       test1 = a_test_named 'First'
       test2 = a_test_named 'Second'
