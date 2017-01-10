@@ -35,6 +35,7 @@ class TestMRspec < Minitest::Spec
     end
 
     describe 'descriptions' do
+      classmeta descriptions: true
       def description_for(class_name)
         MRspec::DeclareMinitests.group_name a_test_named(class_name)
       end
@@ -70,6 +71,7 @@ class TestMRspec < Minitest::Spec
     end
 
     describe 'example names' do
+      classmeta example_names: true
       def example_name_for(method_name)
         MRspec::DeclareMinitests.example_name method_name
       end
@@ -96,6 +98,7 @@ class TestMRspec < Minitest::Spec
     end
 
     describe 'metadata' do
+      classmeta meta: true
       it 'aggregates metadata on the class with classmeta' do
         klass = a_test_named('a') { classmeta a: true }
         assert_equal({a: true}, klass.class_metadata)
@@ -150,6 +153,7 @@ class TestMRspec < Minitest::Spec
   end
 
   describe 'recording tests' do
+    classmeta recording_tests: true
     it 'records minitest errors as failures, and displays the message and the class'
     it 'records minitest failed assertions as failures, and displays the message, but not the class'
     it 'records rspec errors as failures, and displays the message, and the class'
@@ -161,11 +165,13 @@ class TestMRspec < Minitest::Spec
   end
 
   describe 'identifying which test to run' do
+    classmeta identify: true
     it 'matches the -e flag against Minitest tests'
     it 'overrides the default filenames, when one is provided'
   end
 
   describe 'toplevel `describe`' do
+    classmeta toplevel: true
     it 'comes from Minitest::Spec' do
       filename, _linenum = TOPLEVEL_BINDING.method(:describe).source_location
       assert_match /minitest/, filename
