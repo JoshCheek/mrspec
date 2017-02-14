@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   # b/c we go into the guts of RSpec, we're sensitive to private API changes,
   # in this case, we need https://github.com/rspec/rspec-core/commit/d52c969
   # which was released as part of v3.5.0
-  s.add_dependency "rspec-core", "~> 3.5.0"
+  s.add_dependency "rspec-core", "~> 3.5"
 
   s.add_dependency "minitest",   "~> 5.0"
   s.add_dependency "what_weve_got_here_is_an_error_to_communicate", "~> 0.0.8"
