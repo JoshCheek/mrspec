@@ -592,6 +592,7 @@ Feature: mrspec
     Then the program ran successfully
     And stdout includes "I got loaded!"
 
+
   Scenario: Correctly hooks up everything up to enable advanced analysis features
     Given the file "whatev.rb":
     """
@@ -611,3 +612,27 @@ Feature: mrspec
     """
     When I run 'mrspec whatev.rb'
     Then stdout includes "misspell"
+
+
+  Scenario: Can invoke Minitest::Spec with line numbers (#21)
+    Given the file "line_nums_spec.rb":
+    """
+    require 'minitest/spec'
+    describe "group" do
+      it "passing-example" do
+        assert_equal true, true
+      end
+      it "failing-example" do
+        assert_equal true, false
+      end
+    end
+    """
+
+    When I run "mrspec line_nums_spec.rb --format progress"
+    Then stdout includes "2 examples, 1 failure"
+
+    When I run "mrspec line_nums_spec.rb:3 --format progress"
+    Then stdout includes "1 example, 0 failures"
+
+    When I run "mrspec line_nums_spec.rb:6 --format progress"
+    Then stdout includes "1 example, 1 failure"
