@@ -3,6 +3,7 @@ require 'support/helper'
 
 class TestParserMonkeyPatches < Minitest::Spec
   Parser = RSpec::Core::Parser
+  ConfigurationOptions = RSpec::Core::ConfigurationOptions
 
   def rspec_parser
     Parser.instance_method :rspec_parser
@@ -26,15 +27,19 @@ class TestParserMonkeyPatches < Minitest::Spec
   end
 
   describe '#mrspec_parser' do
-    def record_hostile_parsing(option_parser, flag)
-      stdout, stderr, *rest = capture_io do
-        begin option_parser.parse([flag])
-        rescue SystemExit
-        end
-      end
-      assert_empty rest
-      assert_empty stderr
-      stdout
+    def record_hostile_parsing(parser_method_name, flag)
+      # This is performed by Runner.run
+      original_parser_method = Parser.parser_method
+      Parser.parser_method   = Parser.instance_method parser_method_name
+      options = ConfigurationOptions.new([])
+      result  = Parser.parse([flag])
+      stderr  = StringIO.new
+      stdout  = StringIO.new
+      result[:runner].call(options, stderr, stdout)
+      assert_empty stderr.string
+      stdout.string
+    ensure
+      Parser.parser_method = original_parser_method
     end
 
     it 'returns the original #rspec_parser' do
@@ -50,10 +55,10 @@ class TestParserMonkeyPatches < Minitest::Spec
     end
 
     it 'overrides -v and --version includes the Mrspec version, the RSpec::Core version, the Minitest version, and the ErrorToCommunicate version' do
-      rspec_version  = record_hostile_parsing Parser.new([]).rspec_parser({}),  '--version'
-      rspec_v        = record_hostile_parsing Parser.new([]).rspec_parser({}),  '-v'
-      mrspec_version = record_hostile_parsing Parser.new([]).mrspec_parser({}), '--version'
-      mrspec_v       = record_hostile_parsing Parser.new([]).mrspec_parser({}), '-v'
+      rspec_version  = record_hostile_parsing :rspec_parser,  '--version'
+      rspec_v        = record_hostile_parsing :rspec_parser,  '-v'
+      mrspec_version = record_hostile_parsing :mrspec_parser, '--version'
+      mrspec_v       = record_hostile_parsing :mrspec_parser, '-v'
 
       # RSpec version parser defines both of these flags to return its version
       assert_equal rspec_version, rspec_v
@@ -73,8 +78,7 @@ class TestParserMonkeyPatches < Minitest::Spec
     it 'sets the correct description for the versions'
 
     it 'includes the what_weve_got_here_is_an_error_to_communicate formatter in the help screen' do
-      parser     = Parser.new([]).mrspec_parser({})
-      help       = record_hostile_parsing parser, '--help'
+      help       = record_hostile_parsing :mrspec_parser, '--help'
       formatters = help.lines
                        .drop_while { |l| l !~ /--format/ }
                        .drop(1)

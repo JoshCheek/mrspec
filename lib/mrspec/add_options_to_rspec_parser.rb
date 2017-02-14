@@ -1,5 +1,10 @@
-require 'rspec/core/option_parser'
+# Since 3.5, it's worth checking to see if we can get rid of this class and just
+# hijack it in the runner or something. Essentially, they moved away from having
+# the parser calling exit and printing directly, so we might be able to sit above
+# it and compose it rather than going into its guts and guerilla patching it.
+# But not going to do that now b/c got shit to do w/ my life, yo.
 
+require 'rspec/core/option_parser'
 class RSpec::Core::Parser
   # Trying to mitigate the invasiveness of this code.
   # It's not great, but it's better than unconditionally overriding the method.
@@ -13,8 +18,8 @@ class RSpec::Core::Parser
   public :rspec_parser
 
   # Ours calls RSpec's, then modifies values on the returned parser
-  def mrspec_parser(*args, &b)
-    option_parser = rspec_parser(*args, &b)
+  def mrspec_parser(options, *args, &b)
+    option_parser = rspec_parser(options, *args, &b)
 
     # update the program name
     option_parser.banner.gsub! /\brspec\b/, 'mrspec'
@@ -23,11 +28,7 @@ class RSpec::Core::Parser
     # calling exit and toplevel puts, b/c that's what RSpec's does https://github.com/rspec/rspec-core/blob/c7c1154934c42b5f6905bb7bd22025fe6c8a816c/lib/rspec/core/option_parser.rb#L290
     # and I don't feel like figuring out how to work around it.
     option_parser.on('-v', '--version', 'Display the version.') do
-      $stdout.puts "mrspec     #{MRspec::VERSION}\n"\
-                   "rspec-core #{RSpec::Core::Version::STRING}\n"\
-                   "minitest   #{Minitest::VERSION}\n"\
-                   "wwhhiae2c  #{ErrorToCommunicate::VERSION}\n"
-      exit
+      options[:runner] = method :print_mrspec_version
     end
 
     format_description = option_parser.top.short['f'].desc
@@ -50,4 +51,12 @@ class RSpec::Core::Parser
   define_method :parser do |*args, &b|
     self.class.parser_method.bind(self).call(*args, &b)
   end
+
+  def print_mrspec_version(_opts, _err, out)
+    out.puts "mrspec     #{MRspec::VERSION}\n"\
+             "rspec-core #{RSpec::Core::Version::STRING}\n"\
+             "minitest   #{Minitest::VERSION}\n"\
+             "wwhhiae2c  #{ErrorToCommunicate::VERSION}\n"
+  end
 end
+
