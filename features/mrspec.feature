@@ -430,15 +430,8 @@ Feature: mrspec
     Then stdout includes 'expected: "rspec-2"'
     And  stdout includes '     got: "rspec-1"'
     # Minitest assert_equal
-    # Change this assertion once I eventually remove 1.9.3 support
-    # 1.9.3 is diffing the output instead: https://travis-ci.org/JoshCheek/mrspec/jobs/201387941#L824
-    # Newer Rubies have the much more obvious output of:
-    #
-    # And  stdout includes 'Expected: "minitest-1"'
-    # And  stdout includes '  Actual: "minitest-2"'
-    And  stdout includes '"minitest-1"'
-    And  stdout includes '"minitest-2"'
-
+    And  stdout includes 'Expected: "minitest-1"'
+    And  stdout includes '  Actual: "minitest-2"'
 
     # RSpec includes
     And  stdout includes 'expected ["rspec", "a", "b", "c"] to include "d"'
